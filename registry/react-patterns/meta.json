@@ -1,0 +1,9 @@
+{
+  "name": "react-patterns",
+  "type": "skill",
+  "version": "1.0.0",
+  "description": "React best practices for components, hooks, and state",
+  "author": "plugvault",
+  "tags": ["react", "frontend", "hooks", "components"],
+  "entry": "react-patterns.md"
+}

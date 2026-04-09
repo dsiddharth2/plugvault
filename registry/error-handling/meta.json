@@ -1,0 +1,9 @@
+{
+  "name": "error-handling",
+  "type": "skill",
+  "version": "1.0.0",
+  "description": "Consistent error handling patterns across the project",
+  "author": "plugvault",
+  "tags": ["errors", "exceptions", "logging", "reliability"],
+  "entry": "error-handling.md"
+}

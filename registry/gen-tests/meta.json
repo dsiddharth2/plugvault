@@ -1,0 +1,9 @@
+{
+  "name": "gen-tests",
+  "type": "command",
+  "version": "1.0.0",
+  "description": "Generate tests for a file or function",
+  "author": "plugvault",
+  "tags": ["testing", "unit-tests", "generation"],
+  "entry": "gen-tests.md"
+}

@@ -1,0 +1,9 @@
+{
+  "name": "pr-description",
+  "type": "command",
+  "version": "1.0.0",
+  "description": "Generate PR description from staged changes",
+  "author": "plugvault",
+  "tags": ["git", "pull-request", "workflow"],
+  "entry": "pr-description.md"
+}

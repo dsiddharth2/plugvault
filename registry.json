@@ -1,0 +1,90 @@
+{
+  "name": "plugvault-official",
+  "version": "1.0.0",
+  "packages": {
+    "api-patterns": {
+      "type": "skill",
+      "version": "1.0.0",
+      "path": "registry/api-patterns",
+      "description": "Enforces consistent REST API design patterns"
+    },
+    "security-rules": {
+      "type": "skill",
+      "version": "1.0.0",
+      "path": "registry/security-rules",
+      "description": "Security guardrails for safe, auditable code"
+    },
+    "testing-standards": {
+      "type": "skill",
+      "version": "1.0.0",
+      "path": "registry/testing-standards",
+      "description": "Testing conventions for naming, coverage, and mocking"
+    },
+    "git-conventions": {
+      "type": "skill",
+      "version": "1.0.0",
+      "path": "registry/git-conventions",
+      "description": "Git commit format, branch naming, and PR standards"
+    },
+    "react-patterns": {
+      "type": "skill",
+      "version": "1.0.0",
+      "path": "registry/react-patterns",
+      "description": "React best practices for components, hooks, and state"
+    },
+    "error-handling": {
+      "type": "skill",
+      "version": "1.0.0",
+      "path": "registry/error-handling",
+      "description": "Consistent error handling patterns across the project"
+    },
+    "code-style": {
+      "type": "skill",
+      "version": "1.0.0",
+      "path": "registry/code-style",
+      "description": "Code style preferences for naming, structure, and imports"
+    },
+    "code-review": {
+      "type": "command",
+      "version": "1.0.0",
+      "path": "registry/code-review",
+      "description": "Deep code review with security, performance, and quality analysis"
+    },
+    "gen-tests": {
+      "type": "command",
+      "version": "1.0.0",
+      "path": "registry/gen-tests",
+      "description": "Generate tests for a file or function"
+    },
+    "refactor": {
+      "type": "command",
+      "version": "1.0.0",
+      "path": "registry/refactor",
+      "description": "Analyze and refactor selected code"
+    },
+    "explain-codebase": {
+      "type": "command",
+      "version": "1.0.0",
+      "path": "registry/explain-codebase",
+      "description": "Walk through and explain the project structure"
+    },
+    "gen-docs": {
+      "type": "command",
+      "version": "1.0.0",
+      "path": "registry/gen-docs",
+      "description": "Generate documentation for code"
+    },
+    "pr-description": {
+      "type": "command",
+      "version": "1.0.0",
+      "path": "registry/pr-description",
+      "description": "Generate PR description from staged changes"
+    },
+    "debug-help": {
+      "type": "command",
+      "version": "1.0.0",
+      "path": "registry/debug-help",
+      "description": "Analyze an error and suggest fixes"
+    }
+  }
+}

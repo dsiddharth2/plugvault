@@ -1,0 +1,9 @@
+{
+  "name": "code-style",
+  "type": "skill",
+  "version": "1.0.0",
+  "description": "Code style preferences for naming, structure, and imports",
+  "author": "plugvault",
+  "tags": ["style", "naming", "imports", "formatting"],
+  "entry": "code-style.md"
+}

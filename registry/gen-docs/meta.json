@@ -1,0 +1,9 @@
+{
+  "name": "gen-docs",
+  "type": "command",
+  "version": "1.0.0",
+  "description": "Generate documentation for code",
+  "author": "plugvault",
+  "tags": ["documentation", "jsdoc", "api-docs"],
+  "entry": "gen-docs.md"
+}

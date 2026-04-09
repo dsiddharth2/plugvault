@@ -1,0 +1,9 @@
+{
+  "name": "security-rules",
+  "type": "skill",
+  "version": "1.0.0",
+  "description": "Security guardrails for safe, auditable code",
+  "author": "plugvault",
+  "tags": ["security", "owasp", "validation", "auth"],
+  "entry": "security-rules.md"
+}

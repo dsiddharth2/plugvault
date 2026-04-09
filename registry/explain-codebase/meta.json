@@ -1,0 +1,9 @@
+{
+  "name": "explain-codebase",
+  "type": "command",
+  "version": "1.0.0",
+  "description": "Walk through and explain the project structure",
+  "author": "plugvault",
+  "tags": ["documentation", "architecture", "onboarding"],
+  "entry": "explain-codebase.md"
+}

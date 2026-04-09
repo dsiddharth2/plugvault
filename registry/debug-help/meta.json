@@ -1,0 +1,9 @@
+{
+  "name": "debug-help",
+  "type": "command",
+  "version": "1.0.0",
+  "description": "Analyze an error and suggest fixes",
+  "author": "plugvault",
+  "tags": ["debugging", "errors", "troubleshooting"],
+  "entry": "debug-help.md"
+}

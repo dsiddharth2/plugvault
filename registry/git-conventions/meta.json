@@ -1,0 +1,9 @@
+{
+  "name": "git-conventions",
+  "type": "skill",
+  "version": "1.0.0",
+  "description": "Git commit format, branch naming, and PR standards",
+  "author": "plugvault",
+  "tags": ["git", "commits", "branches", "pull-requests"],
+  "entry": "git-conventions.md"
+}

@@ -1,0 +1,9 @@
+{
+  "name": "refactor",
+  "type": "command",
+  "version": "1.0.0",
+  "description": "Analyze and refactor selected code",
+  "author": "plugvault",
+  "tags": ["refactor", "clean-code", "quality"],
+  "entry": "refactor.md"
+}
