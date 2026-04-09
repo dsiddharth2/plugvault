@@ -1,4 +1,9 @@
-# Refactor
+---
+name: refactor
+description: Analyze and refactor selected code to improve readability, maintainability, and correctness without changing behavior. Use when code needs cleanup or restructuring.
+argument-hint: <file-path> [--focus <extract|simplify|rename|restructure>]
+allowed-tools: Read, Grep, Glob, Write, Edit, Bash
+---
 
 Analyze the specified code and apply targeted refactoring to improve readability, maintainability, and correctness without changing behavior.
 

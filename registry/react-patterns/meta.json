@@ -5,5 +5,5 @@
   "description": "React best practices for components, hooks, and state",
   "author": "plugvault",
   "tags": ["react", "frontend", "hooks", "components"],
-  "entry": "react-patterns.md"
+  "entry": "SKILL.md"
 }

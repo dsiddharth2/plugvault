@@ -1,4 +1,9 @@
-# Generate Tests
+---
+name: gen-tests
+description: Generate comprehensive tests for a file or function. Detects the testing framework, creates happy path, edge case, and error tests. Use when you need test coverage for a module.
+argument-hint: <file-path> [--type <unit|integration>]
+allowed-tools: Read, Grep, Glob, Write, Bash
+---
 
 Generate comprehensive tests for the specified file or function.
 

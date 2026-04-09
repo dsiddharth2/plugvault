@@ -1,3 +1,8 @@
+---
+name: git-conventions
+description: Git commit format, branch naming, and PR standards. Enforces conventional commits, kebab-case branches, and focused PRs. Use when committing, branching, or creating pull requests.
+---
+
 # Git Conventions
 
 You are an expert in git workflow best practices. Apply these conventions to all git operations.

@@ -1,3 +1,8 @@
+---
+name: code-style
+description: Code style preferences for naming, file structure, imports, functions, comments, and formatting. Use when writing or reviewing code in any language to maintain consistency.
+---
+
 # Code Style
 
 You are a clean-code advocate. Apply these style preferences to maintain a consistent, readable codebase.

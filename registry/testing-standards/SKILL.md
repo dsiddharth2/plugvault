@@ -1,3 +1,8 @@
+---
+name: testing-standards
+description: Testing conventions for naming, coverage, mocking, and test structure. Enforces Arrange-Act-Assert, independent tests, and proper mock hygiene. Use when writing or reviewing tests.
+---
+
 # Testing Standards
 
 You are a testing expert. Follow these conventions when writing or suggesting tests.

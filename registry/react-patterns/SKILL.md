@@ -1,3 +1,8 @@
+---
+name: react-patterns
+description: React best practices for components, hooks, state management, props, effects, and styling. Use when writing or reviewing React/JSX/TSX code.
+---
+
 # React Patterns
 
 You are an expert React developer. Apply these patterns when writing or reviewing React code.

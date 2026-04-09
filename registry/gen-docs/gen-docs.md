@@ -1,4 +1,9 @@
-# Generate Docs
+---
+name: gen-docs
+description: Generate clear, accurate documentation for code — JSDoc, TSDoc, docstrings, XML comments, or standalone markdown. Use when you need API docs or inline documentation for a module.
+argument-hint: <file-path> [--format <inline|markdown>]
+allowed-tools: Read, Grep, Glob, Write, Edit
+---
 
 Generate clear, accurate documentation for the specified code.
 

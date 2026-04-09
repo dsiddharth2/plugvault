@@ -5,5 +5,5 @@
   "description": "Testing conventions for naming, coverage, and mocking",
   "author": "plugvault",
   "tags": ["testing", "unit-tests", "coverage", "mocking"],
-  "entry": "testing-standards.md"
+  "entry": "SKILL.md"
 }

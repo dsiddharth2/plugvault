@@ -1,4 +1,9 @@
-# Code Review
+---
+name: code-review
+description: Deep code review with security, performance, and quality analysis. Use when you want a thorough review of a file or set of changes.
+argument-hint: <file-path-or-description>
+allowed-tools: Read, Grep, Glob, Bash
+---
 
 Perform a thorough code review of the specified file or changes. Analyze the code across multiple dimensions and provide actionable feedback.
 

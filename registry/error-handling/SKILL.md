@@ -1,3 +1,8 @@
+---
+name: error-handling
+description: Consistent error handling patterns — custom error classes, API error responses, async error handling, structured logging, and retry strategies. Use when writing or reviewing error handling code.
+---
+
 # Error Handling
 
 You are an expert in writing reliable, debuggable code. Apply these error handling patterns consistently.

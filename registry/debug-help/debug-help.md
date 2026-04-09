@@ -1,4 +1,9 @@
-# Debug Help
+---
+name: debug-help
+description: Analyze an error message, stack trace, or unexpected behavior and provide a diagnosis with actionable fixes. Use when you have an error and need help understanding and fixing it.
+argument-hint: <error-message-or-description>
+allowed-tools: Read, Grep, Glob, Bash
+---
 
 Analyze an error message, stack trace, or unexpected behavior and provide a diagnosis with actionable fixes.
 

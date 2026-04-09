@@ -1,4 +1,8 @@
-# Explain Codebase
+---
+name: explain-codebase
+description: Walk through and explain the project structure, architecture, entry points, and conventions. Use when onboarding to a new codebase or helping someone understand a project.
+allowed-tools: Read, Grep, Glob, Bash
+---
 
 Provide a clear, structured walkthrough of the current project for someone new to the codebase.
 

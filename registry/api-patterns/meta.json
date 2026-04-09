@@ -5,5 +5,5 @@
   "description": "Enforces consistent REST API design patterns",
   "author": "plugvault",
   "tags": ["api", "rest", "architecture", "patterns"],
-  "entry": "api-patterns.md"
+  "entry": "SKILL.md"
 }

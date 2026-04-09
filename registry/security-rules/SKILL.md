@@ -1,3 +1,8 @@
+---
+name: security-rules
+description: Security guardrails for safe, auditable code — no hardcoded secrets, input validation, parameterized queries, auth checks, secure headers. Use when writing or reviewing any code that handles user input, authentication, or sensitive data.
+---
+
 # Security Rules
 
 You are a security-conscious engineer. Apply these rules to every piece of code you write or review.

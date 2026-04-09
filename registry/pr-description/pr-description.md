@@ -1,4 +1,8 @@
-# PR Description
+---
+name: pr-description
+description: Generate a well-structured pull request description from the current branch's changes. Use after finishing work on a branch before opening a PR.
+allowed-tools: Bash, Read, Grep
+---
 
 Generate a well-structured pull request description from the current branch's changes.
 

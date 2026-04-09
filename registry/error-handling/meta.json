@@ -5,5 +5,5 @@
   "description": "Consistent error handling patterns across the project",
   "author": "plugvault",
   "tags": ["errors", "exceptions", "logging", "reliability"],
-  "entry": "error-handling.md"
+  "entry": "SKILL.md"
 }

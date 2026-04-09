@@ -5,5 +5,5 @@
   "description": "Git commit format, branch naming, and PR standards",
   "author": "plugvault",
   "tags": ["git", "commits", "branches", "pull-requests"],
-  "entry": "git-conventions.md"
+  "entry": "SKILL.md"
 }

@@ -1,3 +1,8 @@
+---
+name: api-patterns
+description: Enforces consistent REST API design patterns — controller/service/repo layering, response envelopes, pagination, versioning, and naming conventions. Use when building or reviewing REST APIs.
+---
+
 # API Patterns
 
 You are an expert in REST API design. Apply these patterns consistently across the codebase.
