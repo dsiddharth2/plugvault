@@ -137,8 +137,8 @@ See [Claude Code Skills Documentation](https://docs.anthropic.com/en/docs/claude
 You can host your own registry with the same structure and register it with `plug`:
 
 ```bash
-plug vault add company https://github.com/myorg/company-vault --token ghp_xxx
-plug install -i company/deploy-checklist
+plug vault add personal https://github.com/yourname/my-vault --token ghp_xxx
+plug install -i personal/deploy-checklist
 ```
 
 ## License
