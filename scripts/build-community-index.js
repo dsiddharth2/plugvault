@@ -81,14 +81,11 @@ function parseFrontmatter(text) {
 // Dependency inference
 // ---------------------------------------------------------------------------
 
-const VAULT_NAMES = ['superpowers', 'everything-claude-code', 'claude-skills'];
-const DEP_PATTERN = new RegExp(`(${VAULT_NAMES.join('|')}):([\\w-]+)`, 'g');
-
-function inferDependencies(bodyText) {
+function inferDependencies(bodyText, depPattern) {
   const deps = [];
   let m;
-  DEP_PATTERN.lastIndex = 0;
-  while ((m = DEP_PATTERN.exec(bodyText)) !== null) {
+  depPattern.lastIndex = 0;
+  while ((m = depPattern.exec(bodyText)) !== null) {
     deps.push({ vault: m[1], name: m[2] });
   }
   return deps;
@@ -148,10 +145,12 @@ function detectEntryPoints(treeItems) {
 // Process a single vault
 // ---------------------------------------------------------------------------
 
-async function processVault(vault, plugDeps) {
-  const { name: vaultName, url: vaultUrl } = vault;
-  const rawBase = `https://raw.githubusercontent.com/dsiddharth2/${vaultName}/main/`;
-  const apiTreeUrl = `https://api.github.com/repos/dsiddharth2/${vaultName}/git/trees/main?recursive=1`;
+async function processVault(vault, plugDeps, depPattern) {
+  const urlParts = new URL(vault.url);
+  const [, owner, repoName] = urlParts.pathname.split('/');
+  const vaultName = vault.name;
+  const rawBase = `https://raw.githubusercontent.com/${owner}/${repoName}/main/`;
+  const apiTreeUrl = `https://api.github.com/repos/${owner}/${repoName}/git/trees/main?recursive=1`;
 
   process.stderr.write(`[${vaultName}] Fetching git tree...\n`);
   const treeData = await fetchJSON(apiTreeUrl);
@@ -199,7 +198,7 @@ async function processVault(vault, plugDeps) {
     const curatedNames = new Set(dependencies.map((d) => d.name));
 
     // Dependencies — Pass B (inferred)
-    const inferred = inferDependencies(body);
+    const inferred = inferDependencies(body, depPattern);
     for (const dep of inferred) {
       if (!curatedNames.has(dep.name)) {
         dependencies.push({
@@ -217,7 +216,7 @@ async function processVault(vault, plugDeps) {
       name: entryName,
       type: ep.type,
       vault: vaultName,
-      vaultUrl,
+      vaultUrl: `${urlParts.origin}/${owner}/${repoName}`,
       entry: ep.path,
       directory: directory || '.',
       files: filesInDir,
@@ -242,17 +241,22 @@ async function main() {
   const outputPath = path.join(repoRoot, 'community-index.json');
 
   const vaults = JSON.parse(fs.readFileSync(vaultsPath, 'utf8'));
+  const vaultNames = vaults.map(v => v.name);
+  const vaultNamesPattern = vaultNames.join('|');
+  const depPattern = new RegExp(`(${vaultNamesPattern}):([\\w-]+)`, 'g');
   const packages = [];
 
   for (const vault of vaults) {
     process.stderr.write(`\n=== Processing vault: ${vault.name} ===\n`);
 
     // Fetch plug-deps.json for this vault (graceful 404)
-    const depsUrl = `https://raw.githubusercontent.com/dsiddharth2/${vault.name}/main/plug-deps.json`;
+    const urlParts = new URL(vault.url);
+    const [, owner, repoName] = urlParts.pathname.split('/');
+    const depsUrl = `https://raw.githubusercontent.com/${owner}/${repoName}/main/plug-deps.json`;
     process.stderr.write(`[${vault.name}] Fetching plug-deps.json...\n`);
     const plugDeps = (await fetchJSON(depsUrl)) || {};
 
-    const entries = await processVault(vault, plugDeps);
+    const entries = await processVault(vault, plugDeps, depPattern);
     packages.push(...entries);
     process.stderr.write(`[${vault.name}] Contributed ${entries.length} packages.\n`);
   }

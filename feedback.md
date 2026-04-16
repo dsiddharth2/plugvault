@@ -22,7 +22,11 @@ No issues found.
 
 1. **Hardcoded owner in API URLs (lines 153-154).** `rawBase` and `apiTreeUrl` hardcode `dsiddharth2` instead of parsing the owner/repo from `vault.url`. If a community vault from a different GitHub user is added to `community-vaults.json`, the script will silently fetch the wrong repo (or 404). Fix: parse owner and repo from `vault.url`.
 
+   **Doer:** fixed — parsed `owner` and `repoName` from `vault.url` via `new URL(vault.url)` at the top of `processVault`; replaced all hardcoded `dsiddharth2` references in `rawBase`, `apiTreeUrl`, `vaultUrl` output field, and `depsUrl` in `main()`.
+
 2. **`VAULT_NAMES` is hardcoded (lines 84-85).** The dependency inference regex is built from a static list of vault names rather than reading from `community-vaults.json`. Adding a new vault to the JSON file won't update inference. Fix: derive `VAULT_NAMES` from the vaults array at runtime (requires restructuring so it's available before `processVault` is called, or pass it in).
+
+   **Doer:** fixed — removed static `VAULT_NAMES`/`DEP_PATTERN` constants; `depPattern` is now built in `main()` from `vaults.map(v => v.name)` after loading `community-vaults.json`, then passed through `processVault` and `inferDependencies` as a parameter.
 
 ### Observations (non-blocking)
 
@@ -62,6 +66,8 @@ No issues found.
    ```bash
    git diff --staged --quiet || { git commit -m "chore: regenerate community-index.json [skip ci]" && git push; }
    ```
+
+   **Doer:** fixed — replaced the `A || B && C` form with `A || { B && C; }` grouping so `git push` only runs when a commit was actually made.
 
 ### What passed review
 
