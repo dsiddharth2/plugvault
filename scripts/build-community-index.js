@@ -190,7 +190,18 @@ async function processVault(vault, plugDeps, depPattern) {
     }
 
     const directory = ep.dirHint === '.' ? '' : ep.dirHint;
-    const filesInDir = dirMap[ep.dirHint] || dirMap[directory] || [ep.path];
+    let filesInDir = [];
+    if (directory === '') {
+      filesInDir = Object.values(dirMap).flat();
+    } else {
+      const prefix = directory + '/';
+      for (const [dir, files] of Object.entries(dirMap)) {
+        if (dir === directory || dir.startsWith(prefix)) {
+          filesInDir.push(...files);
+        }
+      }
+    }
+    if (filesInDir.length === 0) filesInDir = [ep.path];
 
     // Dependencies — Pass A (curated)
     const curatedRaw = plugDeps[entryName] || [];
