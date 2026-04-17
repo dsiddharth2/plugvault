@@ -23,10 +23,14 @@ function httpsGet(url, headers = {}) {
       reqHeaders['Authorization'] = `Bearer ${process.env.GITHUB_TOKEN}`;
     }
 
-    const req = https.get({ hostname: opts.hostname, path: opts.pathname + opts.search, headers: reqHeaders }, (res) => {
+    const req = https.get({ hostname: opts.hostname, path: opts.pathname + opts.search, headers: reqHeaders, timeout: 10000 }, (res) => {
       let body = '';
       res.on('data', (chunk) => (body += chunk));
       res.on('end', () => resolve({ status: res.statusCode, body }));
+    });
+    req.on('timeout', () => {
+      req.destroy();
+      reject(new Error(`Request timeout for ${url}`));
     });
     req.on('error', reject);
   });

@@ -1,0 +1,17 @@
+{
+  "name": "plugvault-doer",
+  "version": "1.0.0",
+  "description": "Official Skills Registry for Plug CLI",
+  "main": "scripts/build-community-index.js",
+  "scripts": {
+    "build:index": "node scripts/build-community-index.js"
+  },
+  "keywords": [
+    "claude-code",
+    "skills",
+    "registry",
+    "plug"
+  ],
+  "author": "dsiddharth2",
+  "license": "MIT"
+}
