@@ -165,10 +165,6 @@ function resolveFileOwnership(entryPoints, dirMap) {
     dirHintCounts[d] = (dirHintCounts[d] || 0) + 1;
   }
 
-  const entryPointDirSet = new Set(
-    entryPoints.map(ep => ep.dirHint === '.' ? '' : ep.dirHint)
-  );
-
   const result = new Map();
 
   for (const ep of entryPoints) {
@@ -176,49 +172,27 @@ function resolveFileOwnership(entryPoints, dirMap) {
 
     // Category A: flat shared directory — entry file only
     if (dirHintCounts[directory] > 1) {
-      result.set(ep.path, { files: [ep.path], childEntryPoints: [] });
+      result.set(ep.path, { files: [ep.path] });
       continue;
     }
 
     // Category C: root-level
     if (directory === '') {
       const rootFiles = dirMap['.'] || [];
-      result.set(ep.path, { files: rootFiles.length > 0 ? rootFiles : [ep.path], childEntryPoints: [] });
+      result.set(ep.path, { files: rootFiles.length > 0 ? rootFiles : [ep.path] });
       continue;
     }
 
-    // Category B: dedicated directory — exclude child entry point subtrees
+    // Category B: dedicated directory — include all files under it
     const prefix = directory + '/';
-    const childEpDirs = [];
-    for (const d of entryPointDirSet) {
-      if (d !== directory && d.startsWith(prefix)) {
-        childEpDirs.push(d);
-      }
-    }
-
     const filesInDir = [];
     for (const [dir, files] of Object.entries(dirMap)) {
       if (dir !== directory && !dir.startsWith(prefix)) continue;
-      const ownedByChild = childEpDirs.some(childDir =>
-        dir === childDir || dir.startsWith(childDir + '/')
-      );
-      if (!ownedByChild) {
-        filesInDir.push(...files);
-      }
+      filesInDir.push(...files);
     }
-
-    const childNames = entryPoints
-      .filter(child => {
-        if (child === ep) return false;
-        const childDir = child.dirHint === '.' ? '' : child.dirHint;
-        return childDir.startsWith(prefix);
-      })
-      .map(child => child.name || (child.filename ? child.filename.replace(/\.md$/, '') : null))
-      .filter(Boolean);
 
     result.set(ep.path, {
       files: filesInDir.length > 0 ? filesInDir : [ep.path],
-      childEntryPoints: childNames,
     });
   }
 
@@ -275,7 +249,7 @@ async function processVault(vault, plugDeps, depPattern) {
     }
 
     const directory = ep.dirHint === '.' ? '' : ep.dirHint;
-    const ownership = ownershipMap.get(ep.path) || { files: [ep.path], childEntryPoints: [] };
+    const ownership = ownershipMap.get(ep.path) || { files: [ep.path] };
     const filesInDir = ownership.files;
 
     // Dependencies — Pass A (curated)
@@ -295,20 +269,6 @@ async function processVault(vault, plugDeps, depPattern) {
           source: 'inferred',
         });
         curatedNames.add(dep.name);
-      }
-    }
-
-    // Dependencies — Pass C (auto-child entry points)
-    for (const childName of ownership.childEntryPoints) {
-      if (!curatedNames.has(childName)) {
-        dependencies.push({
-          name: childName,
-          type: 'skill',
-          vault: vaultName,
-          required: false,
-          source: 'auto-child',
-        });
-        curatedNames.add(childName);
       }
     }
 
