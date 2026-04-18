@@ -114,6 +114,8 @@ function buildDirMap(treeItems) {
 // Detect entry points
 // ---------------------------------------------------------------------------
 
+const INFRA_FILES = new Set(['.gitkeep', '.gitignore', 'CLAUDE.md', 'README.md', 'TEMPLATE.md']);
+
 function detectEntryPoints(treeItems) {
   const entries = [];
   for (const item of treeItems) {
@@ -128,21 +130,96 @@ function detectEntryPoints(treeItems) {
       continue;
     }
 
-    // agents/*.md — direct child only
-    const agentMatch = p.match(/^agents\/([^/]+\.md)$/);
+    // agents/**/*.md — recursive, skip infra files
+    const agentMatch = p.match(/^agents\/(.+\.md)$/);
     if (agentMatch) {
-      entries.push({ path: p, type: 'agent', dirHint: 'agents', name: null, filename: agentMatch[1] });
+      if (INFRA_FILES.has(path.posix.basename(p))) continue;
+      const dir = path.posix.dirname(p);
+      entries.push({ path: p, type: 'agent', dirHint: dir, name: null, filename: path.posix.basename(p) });
       continue;
     }
 
-    // commands/*.md — direct child only
-    const commandMatch = p.match(/^commands\/([^/]+\.md)$/);
+    // commands/**/*.md — recursive, skip infra files
+    const commandMatch = p.match(/^commands\/(.+\.md)$/);
     if (commandMatch) {
-      entries.push({ path: p, type: 'command', dirHint: 'commands', name: null, filename: commandMatch[1] });
+      if (INFRA_FILES.has(path.posix.basename(p))) continue;
+      const dir = path.posix.dirname(p);
+      entries.push({ path: p, type: 'command', dirHint: dir, name: null, filename: path.posix.basename(p) });
       continue;
     }
   }
   return entries;
+}
+
+// ---------------------------------------------------------------------------
+// Resolve file ownership per entry point
+// ---------------------------------------------------------------------------
+
+function resolveFileOwnership(entryPoints, dirMap) {
+  const dirHintCounts = {};
+  for (const ep of entryPoints) {
+    const d = ep.dirHint === '.' ? '' : ep.dirHint;
+    dirHintCounts[d] = (dirHintCounts[d] || 0) + 1;
+  }
+
+  const entryPointDirSet = new Set(
+    entryPoints.map(ep => ep.dirHint === '.' ? '' : ep.dirHint)
+  );
+
+  const result = new Map();
+
+  for (const ep of entryPoints) {
+    const directory = ep.dirHint === '.' ? '' : ep.dirHint;
+
+    // Category A: flat shared directory — entry file only
+    if (dirHintCounts[directory] > 1) {
+      result.set(ep.path, { files: [ep.path], childEntryPoints: [] });
+      continue;
+    }
+
+    // Category C: root-level
+    if (directory === '') {
+      const rootFiles = dirMap['.'] || [];
+      result.set(ep.path, { files: rootFiles.length > 0 ? rootFiles : [ep.path], childEntryPoints: [] });
+      continue;
+    }
+
+    // Category B: dedicated directory — exclude child entry point subtrees
+    const prefix = directory + '/';
+    const childEpDirs = [];
+    for (const d of entryPointDirSet) {
+      if (d !== directory && d.startsWith(prefix)) {
+        childEpDirs.push(d);
+      }
+    }
+
+    const filesInDir = [];
+    for (const [dir, files] of Object.entries(dirMap)) {
+      if (dir !== directory && !dir.startsWith(prefix)) continue;
+      const ownedByChild = childEpDirs.some(childDir =>
+        dir === childDir || dir.startsWith(childDir + '/')
+      );
+      if (!ownedByChild) {
+        filesInDir.push(...files);
+      }
+    }
+
+    const childNames = entryPoints
+      .filter(child => {
+        if (child === ep) return false;
+        const childDir = child.dirHint === '.' ? '' : child.dirHint;
+        return childDir.startsWith(prefix);
+      })
+      .map(child => child.name || (child.filename ? child.filename.replace(/\.md$/, '') : null))
+      .filter(Boolean);
+
+    result.set(ep.path, {
+      files: filesInDir.length > 0 ? filesInDir : [ep.path],
+      childEntryPoints: childNames,
+    });
+  }
+
+  return result;
 }
 
 // ---------------------------------------------------------------------------
@@ -153,7 +230,7 @@ async function processVault(vault, plugDeps, depPattern) {
   const urlParts = new URL(vault.url);
   const [, owner, repoName] = urlParts.pathname.split('/');
   const vaultName = vault.name;
-  const rawBase = `https://raw.githubusercontent.com/${owner}/${repoName}/main/`;
+  const rawBase = `https://raw.githubusercontent.com/${owner}/${repoName}/refs/heads/main/`;
   const apiTreeUrl = `https://api.github.com/repos/${owner}/${repoName}/git/trees/main?recursive=1`;
 
   process.stderr.write(`[${vaultName}] Fetching git tree...\n`);
@@ -166,6 +243,7 @@ async function processVault(vault, plugDeps, depPattern) {
   const treeItems = treeData.tree;
   const dirMap = buildDirMap(treeItems);
   const entryPoints = detectEntryPoints(treeItems);
+  const ownershipMap = resolveFileOwnership(entryPoints, dirMap);
 
   process.stderr.write(`[${vaultName}] Found ${entryPoints.length} entry points.\n`);
 
@@ -194,18 +272,8 @@ async function processVault(vault, plugDeps, depPattern) {
     }
 
     const directory = ep.dirHint === '.' ? '' : ep.dirHint;
-    let filesInDir = [];
-    if (directory === '') {
-      filesInDir = Object.values(dirMap).flat();
-    } else {
-      const prefix = directory + '/';
-      for (const [dir, files] of Object.entries(dirMap)) {
-        if (dir === directory || dir.startsWith(prefix)) {
-          filesInDir.push(...files);
-        }
-      }
-    }
-    if (filesInDir.length === 0) filesInDir = [ep.path];
+    const ownership = ownershipMap.get(ep.path) || { files: [ep.path], childEntryPoints: [] };
+    const filesInDir = ownership.files;
 
     // Dependencies — Pass A (curated)
     const curatedRaw = plugDeps[entryName] || [];
@@ -224,6 +292,20 @@ async function processVault(vault, plugDeps, depPattern) {
           source: 'inferred',
         });
         curatedNames.add(dep.name);
+      }
+    }
+
+    // Dependencies — Pass C (auto-child entry points)
+    for (const childName of ownership.childEntryPoints) {
+      if (!curatedNames.has(childName)) {
+        dependencies.push({
+          name: childName,
+          type: 'skill',
+          vault: vaultName,
+          required: false,
+          source: 'auto-child',
+        });
+        curatedNames.add(childName);
       }
     }
 
@@ -267,7 +349,7 @@ async function main() {
     // Fetch plug-deps.json for this vault (graceful 404)
     const urlParts = new URL(vault.url);
     const [, owner, repoName] = urlParts.pathname.split('/');
-    const depsUrl = `https://raw.githubusercontent.com/${owner}/${repoName}/main/plug-deps.json`;
+    const depsUrl = `https://raw.githubusercontent.com/${owner}/${repoName}/refs/heads/main/plug-deps.json`;
     process.stderr.write(`[${vault.name}] Fetching plug-deps.json...\n`);
     const plugDeps = (await fetchJSON(depsUrl)) || {};
 
