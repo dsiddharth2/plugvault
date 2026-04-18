@@ -122,6 +122,9 @@ function detectEntryPoints(treeItems) {
     if (item.type !== 'blob') continue;
     const p = item.path;
 
+    if (p.startsWith('docs/')) continue;
+
+
     // SKILL.md anywhere
     if (p === 'SKILL.md' || p.endsWith('/SKILL.md')) {
       const dir = path.posix.dirname(p);
